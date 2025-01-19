@@ -1,12 +1,12 @@
+import re
+from string import ascii_letters
+from random import choice
 from typing import Dict, Any
 
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
-import re
-from string import ascii_letters
-from random import choice
 
 from core.settings import EMAIL_CONFIRM_TOKEN_LENGTH
 

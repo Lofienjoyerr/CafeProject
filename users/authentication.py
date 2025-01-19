@@ -4,8 +4,6 @@ from django.contrib.auth import get_user_model
 from rest_framework.request import Request
 from rest_framework_simplejwt.settings import api_settings
 
-from users.models import EmailAddress
-
 User = get_user_model()
 
 
