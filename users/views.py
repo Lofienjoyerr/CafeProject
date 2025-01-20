@@ -45,9 +45,11 @@ class UserDetailView(RetrieveUpdateAPIView):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     def post(self, request: Request, *args, **kwargs) -> Response:
-        request.data._mutable = True
+        if hasattr(request.data, '_mutable'):
+            request.data._mutable = True
         request.data['email'] = request.data.get('login')
-        request.data._mutable = False
+        if hasattr(request.data, '_mutable'):
+            request.data._mutable = False
         return super().post(request, *args, **kwargs)
 
 
