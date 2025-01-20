@@ -1,5 +1,6 @@
 import os.path
 from datetime import timedelta
+from email.policy import default
 from pathlib import Path
 from decouple import config
 
@@ -9,7 +10,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost, 127.0.0.1').split(', ')
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -154,7 +155,7 @@ SIMPLE_JWT = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-if not DEBUG:
+if DEBUG:
     INSTALLED_APPS = [
         *INSTALLED_APPS,
         'django_extensions',
