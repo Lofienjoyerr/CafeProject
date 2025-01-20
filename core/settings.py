@@ -11,17 +11,12 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = []
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
-
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',
     'users.apps.UsersConfig',
     'cafe.apps.CafeConfig',
     'rest_framework',
@@ -162,6 +157,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 if not DEBUG:
     INSTALLED_APPS = [
         *INSTALLED_APPS,
+        'django_extensions',
         "debug_toolbar",
     ]
     MIDDLEWARE = [
