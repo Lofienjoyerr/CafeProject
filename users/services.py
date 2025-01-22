@@ -54,7 +54,7 @@ def get_password_active_tokens(user: User) -> QuerySet:
 
 
 def verify_email(token: str) -> bool:
-    verify_tokens = EmailVerifyToken.objects.select_related('EmailAddress').filter(token=token,
+    verify_tokens = EmailVerifyToken.objects.select_related('email_address').filter(token=token,
                                                                                    created__gte=datetime.now() - EMAIL_CONFIRM_TIME)
     if verify_tokens:
         verify_token = verify_tokens.first()
