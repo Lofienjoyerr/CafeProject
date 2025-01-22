@@ -10,8 +10,8 @@ Backend часть веб-приложения на Django для управле
 __[Django](https://docs.djangoproject.com/en/5.1/)__ и __[Django REST Framework](https://www.djangoproject.com/)__,
 в качестве основной базы данных использует __[PostgreSQL](https://www.postgresql.org/)__, для кеширования использует __[Redis](https://github.com/redis/redis)__.
 Полнофункциональная пользовательская система основывается на JWT,
-реализованных с помощью библиотеки __[djangorestframework_simplejwt](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)__. В дополнение к проекту имеется OpenAPI схема,
-сгенерированная при помощи __[drf-spectacular](https://github.com/tfranzel/drf-spectacular/)__.
+реализованных с помощью библиотеки __[djangorestframework_simplejwt](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)__. В дополнение, у проекта имеется OpenAPI схема,
+сгенерированная при помощи __[drf-spectacular](https://github.com/tfranzel/drf-spectacular/)__, и __Swagger UI__ для визуализации и тестирования API.
 
 <!-- TOC --><a name="installation"></a>
 ## Установка
@@ -50,8 +50,8 @@ python manage.py migrate
 ```commandline
 python manage.py runserver
 ```
-10. Готово. API будет доступно по адресу `http://127.0.0.1:8000/api/v1/`, а документация к нему -
-`http://127.0.0.1:8000/api/v1/schema/`
+10. Готово. API будет доступно по адресу `http://127.0.0.1:8000/api/v1/`, документация к нему -
+`http://127.0.0.1:8000/api/v1/schema/`, а Swagger UI - `http://127.0.0.1:8000/api/v1/swagger/`.
 
 <!-- TOC --><a name="description"></a>
 ## Краткое описание функционала
