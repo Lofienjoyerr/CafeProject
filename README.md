@@ -8,7 +8,8 @@
 Backend часть веб-приложения на Django для управления заказами в кафе.\
 Код написан на Python фреймворках
 __[Django](https://docs.djangoproject.com/en/5.1/)__ и __[Django REST Framework](https://www.djangoproject.com/)__,
-в качестве основной базы данных использует __[PostgreSQL](https://www.postgresql.org/)__. Полнофункциональная пользовательская система основывается на JWT,
+в качестве основной базы данных использует __[PostgreSQL](https://www.postgresql.org/)__, для кеширования использует __[Redis](https://github.com/redis/redis)__.
+Полнофункциональная пользовательская система основывается на JWT,
 реализованных с помощью библиотеки __[djangorestframework_simplejwt](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)__. В дополнение к проекту имеется OpenAPI схема,
 сгенерированная при помощи __[drf-spectacular](https://github.com/tfranzel/drf-spectacular/)__.
 
