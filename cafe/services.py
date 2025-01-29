@@ -30,7 +30,7 @@ def filter_by_status(queryset: QuerySet, query: QueryDict) -> QuerySet:
 
 def filter_by_date(queryset: QuerySet, query: QueryDict) -> QuerySet:
     date = query.get('date')
-    key = f"orders:status:{date}"
+    key = f"orders:date:{date}"
     target_queryset = cache.get(key)
     if not target_queryset:
         target_queryset = Order.objects.filter(created__date=date)
@@ -39,7 +39,7 @@ def filter_by_date(queryset: QuerySet, query: QueryDict) -> QuerySet:
 
 
 def filter_by_today(queryset: QuerySet, now: datetime) -> QuerySet:
-    key = f"orders:status:{now}"
+    key = f"orders:today:{now}"
     target_queryset = cache.get(key)
     if not target_queryset:
         target_queryset = Order.objects.filter(created__year=now.year, created__month=now.month, created__day=now.day)
@@ -56,4 +56,4 @@ def filter_orders(queryset: QuerySet, query: QueryDict) -> QuerySet:
         queryset = filter_by_date(queryset, query)
     if 'today' in query:
         queryset = filter_by_today(queryset, timezone.localtime(timezone.now()))
-    return queryset
+    return queryset.order_by('-created')

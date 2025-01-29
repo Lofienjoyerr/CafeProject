@@ -4,13 +4,38 @@ from rest_framework import serializers
 from rest_framework.serializers import raise_errors_on_nested_writes
 from rest_framework.utils import model_meta
 
-from cafe.models import Order, Item, OrderManager
+from cafe.models import Order, Item
 
 
 class ItemSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Item
         fields = ['id', 'url', 'name', 'price']
+
+    def update(self, instance, validated_data):
+        raise_errors_on_nested_writes('update', self, validated_data)
+        info = model_meta.get_field_info(instance)
+
+        m2m_fields = []
+        for attr, value in validated_data.items():
+            if attr in info.relations and info.relations[attr].to_many:
+                m2m_fields.append((attr, value))
+            else:
+                setattr(instance, attr, value)
+
+        instance.save()
+
+        if 'price' in validated_data.keys():
+
+            for order in instance.orders.all():
+                order.total_price = Order.objects.calc_price(order.items.all())
+                order.save()
+
+        for attr, value in m2m_fields:
+            field = getattr(instance, attr)
+            field.set(value)
+
+        return instance
 
 
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
@@ -54,11 +79,6 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
             )
             raise TypeError(msg)
 
-        if many_to_many:
-            for field_name, value in many_to_many.items():
-                field = getattr(instance, field_name)
-                field.set(value)
-
         return instance
 
     def update(self, instance, validated_data):
@@ -78,7 +98,7 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
             field = getattr(instance, attr)
             field.set(value)
             if attr == 'items':
-                setattr(instance, 'total_price', OrderManager.calc_price(value))
+                setattr(instance, 'total_price', Order.objects.calc_price(value))
 
         return instance
 

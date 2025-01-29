@@ -35,7 +35,7 @@ class Order(models.Model):
 
 
 class Item(models.Model):
-    name = models.CharField(unique=True, max_length=128, verbose_name='Название блюда')
+    name = models.CharField(max_length=128, verbose_name='Название блюда')
     price = models.PositiveIntegerField(verbose_name='Цена')
 
     def __str__(self):

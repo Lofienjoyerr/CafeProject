@@ -71,7 +71,7 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": config("DJANGO_CACHE_URL", default="redis://127.0.0.1:6379"),
-        "TIMEOUT": 60 * 60 * 24,
+        "TIMEOUT": 60 * 10,
     }
 }
 
@@ -114,7 +114,7 @@ EMAIL_ADMIN = EMAIL_HOST_USER
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,
+    'PAGE_SIZE': 5,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),

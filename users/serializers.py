@@ -1,9 +1,11 @@
 from typing import Dict, Any
+from collections.abc import Mapping
 
 from django.core.exceptions import ValidationError as djValidationError
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import update_last_login
 from rest_framework import serializers, exceptions
+from rest_framework.fields import get_error_detail, SkipField, BooleanField
 from rest_framework.utils import model_meta
 from rest_framework.serializers import raise_errors_on_nested_writes
 from rest_framework.exceptions import ValidationError
@@ -35,7 +37,7 @@ class AdminUserDetailSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         raise_errors_on_nested_writes('update', self, validated_data)
         info = model_meta.get_field_info(instance)
-        is_avatar_updated = validated_data.get("avatar", instance.avatar) != instance.avatar
+        is_avatar_updated = 'avatar' in validated_data
 
         m2m_fields = []
         for attr, value in validated_data.items():
@@ -54,6 +56,45 @@ class AdminUserDetailSerializer(serializers.ModelSerializer):
             crop_avatar(str(instance.avatar))
 
         return instance
+
+    def to_internal_value(self, data):
+        """
+        Dict of native values <- Dict of primitive datatypes.
+        """
+        if not isinstance(data, Mapping):
+            message = self.error_messages['invalid'].format(
+                datatype=type(data).__name__
+            )
+            raise ValidationError({
+                api_settings.NON_FIELD_ERRORS_KEY: [message]
+            }, code='invalid')
+
+        ret = {}
+        errors = {}
+        fields = self._writable_fields
+
+        for field in fields:
+            validate_method = getattr(self, 'validate_' + field.field_name, None)
+            primitive_value = field.get_value(data)
+            try:
+                if type(field) is BooleanField and not field.field_name in data:
+                    raise SkipField
+                validated_value = field.run_validation(primitive_value)
+                if validate_method is not None:
+                    validated_value = validate_method(validated_value)
+            except ValidationError as exc:
+                errors[field.field_name] = exc.detail
+            except djValidationError as exc:
+                errors[field.field_name] = get_error_detail(exc)
+            except SkipField:
+                pass
+            else:
+                self.set_value(ret, field.source_attrs, validated_value)
+
+        if errors:
+            raise ValidationError(errors)
+
+        return ret
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -90,6 +131,45 @@ class UserDetailSerializer(serializers.ModelSerializer):
             crop_avatar(str(instance.avatar))
 
         return instance
+
+    def to_internal_value(self, data):
+        """
+        Dict of native values <- Dict of primitive datatypes.
+        """
+        if not isinstance(data, Mapping):
+            message = self.error_messages['invalid'].format(
+                datatype=type(data).__name__
+            )
+            raise ValidationError({
+                api_settings.NON_FIELD_ERRORS_KEY: [message]
+            }, code='invalid')
+
+        ret = {}
+        errors = {}
+        fields = self._writable_fields
+
+        for field in fields:
+            validate_method = getattr(self, 'validate_' + field.field_name, None)
+            primitive_value = field.get_value(data)
+            try:
+                if type(field) is BooleanField and not field.field_name in data:
+                    raise SkipField
+                validated_value = field.run_validation(primitive_value)
+                if validate_method is not None:
+                    validated_value = validate_method(validated_value)
+            except ValidationError as exc:
+                errors[field.field_name] = exc.detail
+            except djValidationError as exc:
+                errors[field.field_name] = get_error_detail(exc)
+            except SkipField:
+                pass
+            else:
+                self.set_value(ret, field.source_attrs, validated_value)
+
+        if errors:
+            raise ValidationError(errors)
+
+        return ret
 
 
 class AdminUsersListSerializer(serializers.HyperlinkedModelSerializer):

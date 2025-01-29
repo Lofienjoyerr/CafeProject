@@ -1,14 +1,17 @@
 from typing import Type
 
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, CreateAPIView
+from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_200_OK
 from rest_framework_simplejwt.views import TokenObtainPairView
-from drf_spectacular.utils import extend_schema, OpenApiResponse, extend_schema_view, OpenApiRequest, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiResponse, extend_schema_view, OpenApiRequest, OpenApiParameter, \
+    inline_serializer
 
 from core.settings import EMAIL_CONFIRM_TIME
 from .permissions import IsOwnerOrIsAdmin, IsEmailOwnerOrIsAdmin, IsActive
@@ -169,7 +172,15 @@ class PasswordResetVerifyView(CreateAPIView):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     @extend_schema(
-        request=None,
+        request={
+            "application/json": inline_serializer(
+                name="LoginSerializer",
+                fields={
+                    "login": serializers.EmailField(),
+                    "password": serializers.CharField(max_length=128),
+                },
+            ),
+        },
         parameters=None,
         responses=MyTokenObtainPairSerializer,
         methods=["POST"],
@@ -229,6 +240,7 @@ class RegisterView(APIView):
         methods=["POST"],
         description="Endpoint to register user and send email"
     )
+    @transaction.atomic
     def post(self, request: Request) -> Response:
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

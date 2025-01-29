@@ -144,7 +144,7 @@ class OrdersViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, mixins.Cre
 class ItemsViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.DestroyModelMixin,
                    mixins.UpdateModelMixin, viewsets.GenericViewSet):
     serializer_class = ItemSerializer
-    queryset = Item.objects.filter().order_by('-id')
+    queryset = Item.objects.filter().order_by('id')
     permission_classes = [IsAdminUser, IsActive]
 
 

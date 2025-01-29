@@ -86,8 +86,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class EmailAddressManager(models.Manager):
-    def create(self, email_address: str, user: User) -> 'EmailAddress':
-        email_address = self.model(email_address=email_address, user=user)
+    def create(self, email_address: str, user: User, **kwargs) -> 'EmailAddress':
+        email_address = self.model(email_address=email_address, user=user, **kwargs)
         email_address.save(using=self._db)
         return email_address
 
