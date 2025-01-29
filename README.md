@@ -7,10 +7,11 @@
 # CafeProject
 Backend часть веб-приложения на Django для управления заказами в кафе.\
 Код написан на Python фреймворках
-__[Django](https://docs.djangoproject.com/en/5.1/)__ и __[Django REST Framework](https://www.djangoproject.com/)__,
-в качестве основной базы данных использует __[PostgreSQL](https://www.postgresql.org/)__, для кеширования использует __[Redis](https://github.com/redis/redis)__.
+__[Django](https://docs.djangoproject.com/en/5.1/)__ и __[Django REST Framework](https://www.djangoproject.com/)__. В качестве основной базы данных использует __[PostgreSQL](https://www.postgresql.org/)__,
+для кеширования использует __[Redis](https://github.com/redis/redis)__.
 Полнофункциональная пользовательская система основывается на JWT,
-реализованных с помощью библиотеки __[djangorestframework_simplejwt](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)__. В дополнение, у проекта имеется OpenAPI схема,
+реализованных с помощью библиотеки __[djangorestframework_simplejwt](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)__. Тестирование проведено с помощью фреймворка
+__[pytest](https://github.com/pytest-dev/pytest)__. В дополнение, у проекта имеется OpenAPI схема,
 сгенерированная при помощи __[drf-spectacular](https://github.com/tfranzel/drf-spectacular/)__, и __Swagger UI__ для визуализации и тестирования API.
 
 <!-- TOC --><a name="installation"></a>
