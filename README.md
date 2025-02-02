@@ -20,21 +20,21 @@ Backend часть веб-приложения на Django для управле
 Данная инструкция будет использовать именно эти инструменты. Также инструкция направлена на пользователей Windows.
 Для пользователей Unix-систем алгоритм в общем будет такой же, но небольшие отличия приводить не будем.
 1. Клонируем репозиторий
-```commandline
+```cmd
 git clone https://github.com/Lofienjoyerr/CafeProject.git
 cd CafeProject/
 ```
 2. Создаём виртуальное окружение и активируем его
-```commandline
+```cmd
 python -m venv .venv
 .venv/Scripts/activate
 ```
 3. Скачиваем и устанавливаем все зависимости
-```commandline
+```cmd
 pip install -r requirements.txt
 ```
 5. (Optional) Если вы хотите запустить сервер в режиме debug, то также установите
-```commandline
+```cmd
 pip install django-debug-toolbar
 pip install ipython
 pip install django-extensions
@@ -43,14 +43,18 @@ pip install django-extensions
 найдите самостоятельно)
 7. Создаём файл окружения `.env` и настраиваем его по примеру файла `.env.template`
 8. Применяем миграции
-```commandline
+```cmd
 python manage.py migrate
 ```
-9. Запускаем сервер
-```commandline
-python manage.py runserver
+9. В отдельном окне терминала запускаем celery
+```cmd
+./scripts/celery.sh
 ```
-10. Готово. API будет доступно по адресу `http://127.0.0.1:8000/api/v1/`, документация к нему -
+10. Запускаем сервер
+```cmd
+./scripts/run.sh
+```
+11. Готово. API будет доступно по адресу `http://127.0.0.1:8000/api/v1/`, документация к нему -
 `http://127.0.0.1:8000/api/v1/schema/`, а Swagger UI - `http://127.0.0.1:8000/api/v1/swagger/`.
 
 <!-- TOC --><a name="description"></a>
