@@ -16,7 +16,7 @@ from rest_framework_simplejwt.settings import api_settings
 from users.authentication import JWTEmailOrPhoneBackend
 from users.models import PasswordResetToken
 from users.services import get_user_by_email
-from users.utils import crop_avatar
+from users.tasks import crop_avatar
 
 User = get_user_model()
 
@@ -53,7 +53,7 @@ class AdminUserDetailSerializer(serializers.ModelSerializer):
             field.set(value)
 
         if is_avatar_updated:
-            crop_avatar(str(instance.avatar))
+            crop_avatar.apply_async(args=[str(instance.avatar)])
 
         return instance
 
@@ -128,7 +128,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             field.set(value)
 
         if is_avatar_updated:
-            crop_avatar(str(instance.avatar))
+            crop_avatar.apply_async(args=[str(instance.avatar)])
 
         return instance
 

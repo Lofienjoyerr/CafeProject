@@ -163,6 +163,9 @@ SIMPLE_JWT = {
     "TOKEN_OBTAIN_SERIALIZER": "users.serializers.MyTokenObtainPairSerializer",
 }
 
+CELERY_BROKER_URL = config("CELERY_BROKER_URL", default="redis://127.0.0.1:6379/0")
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", default="redis://127.0.0.1:6379/2")
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'CafeProject API',
     'DESCRIPTION': 'Backend for cafe order management',
