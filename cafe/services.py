@@ -10,7 +10,7 @@ from cafe.models import Order
 
 def filter_by_table_number(queryset: QuerySet, query: QueryDict) -> QuerySet:
     lst = [table for table in query.getlist('table_number')]
-    key = f"orders:table_number:{"-".join(lst)}"
+    key = f"orders:table_number:{'-'.join(lst)}"
     target_queryset = cache.get(key)
     if not target_queryset:
         target_queryset = Order.objects.filter(table_number__in=[int(table) for table in lst])
@@ -20,7 +20,7 @@ def filter_by_table_number(queryset: QuerySet, query: QueryDict) -> QuerySet:
 
 def filter_by_status(queryset: QuerySet, query: QueryDict) -> QuerySet:
     lst = query.getlist('status')
-    key = f"orders:status:{"-".join(lst)}"
+    key = f"orders:status:{'-'.join(lst)}"
     target_queryset = cache.get(key)
     if not target_queryset:
         target_queryset = Order.objects.filter(status__in=lst)
