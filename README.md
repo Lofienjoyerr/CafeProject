@@ -12,6 +12,7 @@ Backend часть веб-приложения на Django для управле
 Полнофункциональная пользовательская система основывается на JWT, реализованных с помощью библиотеки __[djangorestframework_simplejwt](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)__.
 Тестирование проведено с помощью фреймворка __[pytest](https://github.com/pytest-dev/pytest)__.
 В дополнение, у проекта имеется OpenAPI схема, сгенерированная при помощи __[drf-spectacular](https://github.com/tfranzel/drf-spectacular/)__, и __Swagger UI__ для визуализации и тестирования API.
+Также реализовано логирование, сохраняющееся в файл `log.log` в корневой директории.
 
 <!-- TOC --><a name="installation"></a>
 ## Установка
