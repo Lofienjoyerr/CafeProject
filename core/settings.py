@@ -1,6 +1,5 @@
 import os.path
 from datetime import timedelta
-from email.policy import default
 from pathlib import Path
 from decouple import config
 
