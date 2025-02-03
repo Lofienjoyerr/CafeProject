@@ -82,14 +82,20 @@ from users.permissions import IsActive
 class OrdersViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.DestroyModelMixin,
                     mixins.UpdateModelMixin, viewsets.GenericViewSet):
     serializer_class = OrderSerializer
-    queryset = Order.objects.filter().order_by('-created')
+    queryset = Order.objects.prefetch_related('items').filter().order_by('-created')
     permission_classes = [IsAdminUser, IsActive]
 
-    def get_queryset(self):
-        if self.action == "list":  # noqa
-            query = self.request.query_params
-            return filter_orders(self.queryset, query)
-        return self.queryset
+    def list(self, request, *args, **kwargs):
+        query = request.query_params
+        queryset = filter_orders(self.get_queryset(), query)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 @extend_schema_view(

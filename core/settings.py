@@ -26,6 +26,10 @@ INSTALLED_APPS = [
     'drf_spectacular',
 ]
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -71,7 +75,7 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": config("DJANGO_CACHE_URL", default="redis://127.0.0.1:6379/0"),
-        "TIMEOUT": 60 * 10,
+        "TIMEOUT": 60 * 60 * 10,
     }
 }
 
@@ -121,7 +125,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-ACCESS_TOKEN_LIFETIME = 10  # minutes
+ACCESS_TOKEN_LIFETIME = 600  # minutes
 REFRESH_TOKEN_LIFETIME = 30  # days
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=ACCESS_TOKEN_LIFETIME),

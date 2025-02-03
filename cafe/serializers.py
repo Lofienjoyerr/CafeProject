@@ -107,5 +107,5 @@ class CalcRevenueSerializer(serializers.Serializer):
     date = serializers.DateField(required=True)
 
     def create(self, validated_data):
-        orders = Order.objects.filter(status='PAID', created__date=validated_data.get('date'))
+        orders = Order.objects.filter(status='PAID', created__date=validated_data['date'])
         return sum(order.total_price for order in orders)
