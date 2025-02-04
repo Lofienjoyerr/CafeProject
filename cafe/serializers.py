@@ -10,7 +10,7 @@ from cafe.models import Order, Item
 class ItemSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Item
-        fields = ['id', 'url', 'name', 'price']
+        fields = ['id', 'url', 'name', 'price', 'description']
 
     def update(self, instance, validated_data):
         raise_errors_on_nested_writes('update', self, validated_data)

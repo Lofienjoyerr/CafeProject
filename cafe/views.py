@@ -1,12 +1,13 @@
 from typing import Any
 
 from rest_framework import mixins, viewsets
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.permissions import IsAdminUser
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiTypes
 
+from cafe.documents import ItemDocument
 from cafe.models import Order, Item
 from cafe.serializers import OrderSerializer, ItemSerializer, CalcRevenueSerializer
 from cafe.services import filter_orders
@@ -158,6 +159,7 @@ class ItemsViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, mixins.Crea
     create=extend_schema(
         request=CalcRevenueSerializer,
         parameters=None,
+        responses={200: int},
         methods=["POST"],
         description="Endpoint to calc revenue for some date"
     )
@@ -171,3 +173,33 @@ class CalcRevenueView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         revenue = serializer.save()
         return Response({'revenue': revenue}, status=HTTP_200_OK)
+
+
+@extend_schema_view(
+    retrieve=extend_schema(
+        request=None,
+        parameters=[
+            OpenApiParameter(name='match', required=True, type=str,
+                             description='A match phrase',
+                             location=OpenApiParameter.QUERY, explode=False
+                             ),
+        ],
+        responses=ItemSerializer,
+        methods=["GET"],
+        description="Endpoint to elastic search items"
+    )
+)
+class SearchItemView(RetrieveAPIView):
+    serializer_class = ItemSerializer
+    permission_classes = [IsAdminUser, IsActive]
+
+    def retrieve(self, request, *args, **kwargs):
+        search_results = ItemDocument.search().query(
+            "multi_match",
+            query=request.query_params.get('match'),
+            fields=["name", "description"]
+        ).execute()
+        if search_results:
+            serializer = self.get_serializer(get_object_or_404(Item, pk=search_results[0].meta['id']))
+            return Response(serializer.data)
+        return Response({'detail': "Объектов не обнаружено"}, status=HTTP_400_BAD_REQUEST)

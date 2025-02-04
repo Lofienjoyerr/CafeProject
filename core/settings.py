@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
+    'django_elasticsearch_dsl'
 ]
 
 MIDDLEWARE = [
@@ -75,6 +76,12 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": config("DJANGO_CACHE_URL", default="redis://127.0.0.1:6379/0"),
         "TIMEOUT": 60 * 10,
+    }
+}
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': config('ELASTICSEARCH_HOSTS', default='http://127.0.0.1:9200/')
     }
 }
 
