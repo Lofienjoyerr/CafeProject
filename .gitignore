@@ -1,7 +1,9 @@
-.venv/
-.idea/
-.env
+**/.git/
+**/.venv/
+**/.idea/
 **/__pycache__/
-static/
-media/
+**/.pytest_cache/
+**/static/
+**/media/
+.env
 log.log
