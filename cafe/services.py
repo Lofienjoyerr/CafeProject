@@ -7,7 +7,7 @@ from django.db.models import QuerySet
 
 def filter_by_table_number(queryset: QuerySet, query: QueryDict) -> QuerySet:
     lst = query.getlist('table_number')
-    queryset = queryset.filter(table_number__in=[int(table) for table in lst])
+    queryset = queryset.filter(table_number__in={int(table) for table in lst})
     return queryset
 
 
