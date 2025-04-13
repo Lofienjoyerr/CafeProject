@@ -96,7 +96,7 @@ LOGGING = {
     },
     'handlers': {
         'zxc': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'log.log'),
             'formatter': 'myFormatter'
@@ -105,7 +105,12 @@ LOGGING = {
     'loggers': {
         'cafe': {
             'handlers': ['zxc'],
-            'level': 'WARNING',
+            'level': 'INFO',
+            'propagate': False
+        },
+        'users': {
+            'handlers': ['zxc'],
+            'level': 'INFO',
             'propagate': False
         }
     }

@@ -9,6 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 
 from core.settings import EMAIL_CONFIRM_TOKEN_LENGTH
+from users.tasks import send_email_verify
 
 
 class OverwriteStorage(FileSystemStorage):
@@ -41,7 +42,8 @@ class CustomUserManager(UserManager):
         user.full_clean()
         user.set_password(user.password)
         user.save(using=self._db)
-
+        token = self.create_email_and_token(email, user)
+        send_email_verify.apply_async(args=[email, token])
         return user
 
     def create(self, email: str = None, password: str = None, **extra_fields: Dict[str, Any]) -> 'User':
@@ -52,6 +54,10 @@ class CustomUserManager(UserManager):
         extra_fields.setdefault('is_superuser', True)
         return self._create_user(email, password, **extra_fields)
 
+    @staticmethod
+    def create_email_and_token(email: str, user: 'User') -> str:
+        email_address = EmailAddress.objects.create(email, user)
+        return EmailVerifyToken.objects.create(email_address)
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, max_length=128)

@@ -10,9 +10,9 @@ from users.models import EmailAddress, EmailVerifyToken, PasswordResetToken
 User = get_user_model()
 
 
-def create_email_and_token(email: str, user: User) -> str:
+def create_email_and_token(email: str, user: User) -> None:
     email_address = EmailAddress.objects.create(email, user)
-    return EmailVerifyToken.objects.create(email_address)
+    EmailVerifyToken.objects.create(email_address)
 
 
 def create_password_token(user: User) -> str:

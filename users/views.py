@@ -21,7 +21,7 @@ from .serializers import (AdminUsersListSerializer, UsersListSerializer,
                           EmailResendSerializer, PasswordResendSerializer, MyTokenObtainPairSerializer)
 from .services import get_user, verify_email, get_password_reset_token, create_email_and_token, get_email_address, \
     get_email_address_active_tokens, get_user_by_email, get_password_active_tokens
-from users.tasks import send_email_verify, send_password_reset
+from users.tasks import send_password_reset, send_email_verify
 
 User = get_user_model()
 
@@ -245,11 +245,7 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         if serializer.validated_data.get('password1') == serializer.validated_data.get('password2'):
-            user = serializer.save()
-            email = serializer.validated_data.get('email')
-
-            token = create_email_and_token(email, user)
-            send_email_verify.apply_async(args=[email, token])
+            serializer.save()
 
             return Response({
                 'detail': f'Письмо для подтверждения email отправлено. Перейдите по ссылке внутри письма в течение {EMAIL_CONFIRM_TIME.seconds // 60} минут'},
