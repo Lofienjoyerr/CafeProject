@@ -1,8 +1,59 @@
 services:
   cafe_backend:
     image: cafe_img
-    build:
-
+    build: .
+    container_name: cafe_app
+    networks:
+      - cafe_network
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      search:
+        condition: service_healthy
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - cafe_network
+  redis:
+    image: redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-h", "127.0.0.1", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_data:/data
+    networks:
+      - cafe_network
+  search:
+    image: elasticsearch:7.17.28
+    environment:
+      discovery.type: single-node
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200/_cluster/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+      - ./scripts/init-es-db.sh:/docker-entrypoint-initdb.d
+    networks:
+      - cafe_network
 
 networks:
   cafe_network:
@@ -10,3 +61,5 @@ networks:
 
 volumes:
   pg_data:
+  redis_data:
+  es_data:
