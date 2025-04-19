@@ -26,6 +26,7 @@ cd CafeProject/
 ```
 3. Создаём файл окружения .env и настраиваем его по примеру файла .env.template.
 4. Запускаем все контейнеры.
+
 Для первого раза:
 ```commandline
 docker compose up -d --build
